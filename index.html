@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FA Personnel Management</title>
+    <title>FA Personnel Overview</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.22.10/babel.min.js"></script>
@@ -12,1209 +12,206 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
-      // Kiểm tra tải thư viện
-      if (!window.React || !window.ReactDOM || !window.Babel) {
-        console.error(
-          "Failed to load one or more libraries (React, ReactDOM, Babel). Please check your network or CDN."
-        );
-        document.getElementById("root").innerHTML =
-          "<h1>Error: Failed to load required libraries. Please refresh the page or check your network.</h1>";
-      }
-
       const { useState, useEffect } = React;
 
-      // Dữ liệu mẫu với 13 Line, không có workersNeed trong details
-      const initialLineData = [
-        {
-          line: "HZG - RSM 1",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "241105751R",
-              eng: "ECN20-1829",
-              date: "2025-07-19",
-              planQty: 30,
-              tarkTime: 24,
-            },
-            {
-              code: "241514360R",
-              eng: "ECN20-1344",
-              date: "2025-07-19",
-              planQty: 48,
-              tarkTime: 25,
-            },
-            {
-              code: "241517436R",
-              eng: "ECN20-1830",
-              date: "2025-07-19",
-              planQty: 48,
-              tarkTime: 25,
-            },
-            {
-              code: "240236285R",
-              eng: "ECN24-0253",
-              date: "2025-07-19",
-              planQty: 28,
-              tarkTime: 26,
-            },
-            {
-              code: "240503980R",
-              eng: "ECN23-0213",
-              date: "2025-07-19",
-              planQty: 39,
-              tarkTime: 25,
-            },
-            {
-              code: "241260388R",
-              eng: "ECN23-0687",
-              date: "2025-07-19",
-              planQty: 36,
-              tarkTime: 25,
-            },
-            {
-              code: "241270577R",
-              eng: "ECN23-0686",
-              date: "2025-07-19",
-              planQty: 54,
-              tarkTime: 25,
-            },
-            {
-              code: "241273975R",
-              eng: "ECN23-0686",
-              date: "2025-07-19",
-              planQty: 18,
-              tarkTime: 24,
-            },
-          ],
-        },
-        {
-          line: "HZG - RSM 2",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "241242911R",
-              eng: "ECN23-1065",
-              date: "2025-07-19",
-              planQty: 10,
-              tarkTime: 26,
-            },
-            {
-              code: "241249841R",
-              eng: "ECN24-0214",
-              date: "2025-07-19",
-              planQty: 30,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "HZG - RSM 3",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "241638713S",
-              eng: "ECN22-0596",
-              date: "2025-07-19",
-              planQty: 36,
-              tarkTime: 25,
-            },
-            {
-              code: "241630662S",
-              eng: "ECN22-0596",
-              date: "2025-07-19",
-              planQty: 54,
-              tarkTime: 25,
-            },
-            {
-              code: "241631358S",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 18,
-              tarkTime: 24,
-            },
-          ],
-        },
-        {
-          line: "PR310 - DR/PA",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "Nhiều mã",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 600,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "PR310 - RH/LH",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "Nhiều mã",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 400,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "PR310 - HVAC",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "C15435423306",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 360,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "GMK - 9BUX ENG AWD",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "42935770",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 216,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "GMK - 9BUX ENG FWD",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "42935772",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 220,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "GMK - 9BUX ENG LIH",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [],
-        },
-        {
-          line: "GMK - 9BUX BAT + DOOSAN BAT",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "Nhiều mã",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 975,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "HDHI - ENG/AS/G2",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "17 mã",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 252,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "KGM - U100",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "A47-L0970",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 100,
-              tarkTime: 25,
-            },
-          ],
-        },
-        {
-          line: "DH",
-          timeWork: 440,
-          productivity: 0.95,
-          details: [
-            {
-              code: "P1870",
-              eng: "ECN24-0251",
-              date: "2025-07-19",
-              planQty: 900,
-              tarkTime: 25,
-            },
-          ],
-        },
-      ];
-
-      // Dropdown options
-      const timeWorkOptions = [
-        { label: "8T", value: 440 },
-        { label: "12T", value: 650 },
-        { label: "15T", value: 800 },
-      ];
-      const productivityOptions = [0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0];
+      // Hàm tính Workers Need cho một mã hàng (không làm tròn)
+      const calculateWorkersNeed = (planQty, tarkTime, timeWork) => {
+        return (planQty * tarkTime) / timeWork;
+      };
 
       // Hàm làm tròn Workers Need cho tổng Line
       const customRound = (number) => {
-        try {
-          const decimalPart = number % 1;
-          if (decimalPart > 0.5) {
-            return Math.ceil(number);
-          } else {
-            return Math.floor(number);
-          }
-        } catch (error) {
-          console.error("Error in customRound:", error.message, error.stack);
-          return 0;
+        const decimalPart = number % 1;
+        if (decimalPart > 0.5) {
+          return Math.ceil(number);
+        } else {
+          return Math.floor(number);
         }
       };
 
-      // Hàm tính Workers Need cho một mã hàng
-      const calculateWorkersNeed = (planQty, tarkTime, timeWork) => {
-        try {
-          const qty = Number(planQty) || 0;
-          const time = Number(tarkTime) || 0;
-          const workTime = Number(timeWork) || 440;
-          return (qty * time) / workTime;
-        } catch (error) {
-          console.error(
-            "Error in calculateWorkersNeed:",
-            error.message,
-            error.stack
-          );
-          return 0;
-        }
-      };
-
-      // Hàm chuẩn hóa dữ liệu Line
-      const normalizeLineData = (lines, date) => {
-        try {
-          if (!Array.isArray(lines)) {
-            console.error(
-              "normalizeLineData: Input is not an array, reverting to initialLineData"
-            );
-            return normalizeLineData(initialLineData, date); // Fallback to initialLineData
-          }
-          return lines.map((line, index) => {
-            try {
-              const normalizedLine = {
-                line:
-                  typeof line.line === "string" && line.line.trim()
-                    ? line.line
-                    : `Unnamed Line ${index + 1}`,
-                timeWork: Number(line.timeWork) || 440,
-                productivity: Number(line.productivity) || 0.95,
-                details: Array.isArray(line.details) ? line.details : [],
-              };
-              normalizedLine.details = normalizedLine.details.map(
-                (detail, detailIndex) => {
-                  try {
-                    return {
-                      code:
-                        typeof detail.code === "string"
-                          ? detail.code
-                          : `CODE_${detailIndex}`,
-                      eng: typeof detail.eng === "string" ? detail.eng : "",
-                      date:
-                        typeof detail.date === "string" && detail.date
-                          ? detail.date
-                          : date,
-                      planQty: Number(detail.planQty) || 0,
-                      tarkTime: Number(detail.tarkTime) || 0,
-                      workersNeed: calculateWorkersNeed(
-                        Number(detail.planQty) || 0,
-                        Number(detail.tarkTime) || 0,
-                        normalizedLine.timeWork
-                      ),
-                    };
-                  } catch (error) {
-                    console.error(
-                      `Error normalizing detail at line ${index}, detail ${detailIndex}:`,
-                      error.message,
-                      error.stack
-                    );
-                    return {
-                      code: `CODE_${detailIndex}`,
-                      eng: "",
-                      date: date,
-                      planQty: 0,
-                      tarkTime: 0,
-                      workersNeed: 0,
-                    };
-                  }
-                }
-              );
-              return {
-                ...normalizedLine,
-                ...calculateLineMetrics(
-                  normalizedLine.details,
-                  normalizedLine.timeWork,
-                  normalizedLine.productivity,
-                  date
-                ),
-              };
-            } catch (error) {
-              console.error(
-                `Error normalizing line at index ${index}:`,
-                error.message,
-                error.stack
-              );
-              return {
-                line: `Unnamed Line ${index + 1}`,
-                timeWork: 440,
-                productivity: 0.95,
-                details: [],
-                planDay: 0,
-                workersNeed: 0,
-              };
-            }
-          });
-        } catch (error) {
-          console.error(
-            "Error in normalizeLineData:",
-            error.message,
-            error.stack
-          );
-          return normalizeLineData(initialLineData, date); // Fallback to initialLineData
-        }
-      };
-
-      // Hàm tính toán tổng Workers Need và Plan Day cho một Line
+      // Hàm tính toán tổng Workers Need và Plan Day cho một Line với ngày cụ thể
       const calculateLineMetrics = (details, timeWork, productivity, date) => {
-        try {
-          const filteredDetails = Array.isArray(details)
-            ? details.filter((item) => item.date === date)
-            : [];
-          const totalPlanQty = filteredDetails.reduce(
-            (sum, item) => sum + (Number(item.planQty) || 0),
-            0
-          );
-          const totalWorkersNeed = filteredDetails.reduce(
-            (sum, item) => sum + (Number(item.workersNeed) || 0),
-            0
-          );
-          return {
-            planDay: totalPlanQty,
-            workersNeed:
-              filteredDetails.length > 0
-                ? customRound(totalWorkersNeed / (Number(productivity) || 0.95))
-                : 0,
-          };
-        } catch (error) {
-          console.error(
-            "Error in calculateLineMetrics:",
-            error.message,
-            error.stack
-          );
-          return { planDay: 0, workersNeed: 0 };
-        }
+        const filteredDetails = details.filter((item) => item.date === date);
+        const totalPlanQty = filteredDetails.reduce(
+          (sum, item) => sum + item.planQty,
+          0
+        );
+        const totalWorkersNeed = filteredDetails.reduce(
+          (sum, item) =>
+            sum + calculateWorkersNeed(item.planQty, item.tarkTime, timeWork),
+          0
+        );
+        return {
+          planDay: totalPlanQty,
+          workersNeed:
+            filteredDetails.length > 0
+              ? customRound(totalWorkersNeed / productivity)
+              : 0,
+        };
+      };
+
+      // Hàm lấy Worker Actual giả định (có thể mở rộng để lấy từ chấm công)
+      const calculateWorkerActual = (details, date) => {
+        // Giả định Worker Actual = 0 hoặc tính từ dữ liệu chấm công (mở rộng sau)
+        return 0; // Thay bằng logic thực tế nếu có dữ liệu chấm công
       };
 
       function App() {
-        // Tải dữ liệu từ localStorage hoặc sử dụng initialLineData
         const [lines, setLines] = useState(() => {
           try {
             const savedLines = localStorage.getItem("lines");
-            if (!savedLines) {
-              console.log(
-                "No saved lines found in localStorage, using initialLineData"
-              );
-              return normalizeLineData(initialLineData, "2025-07-19");
+            if (savedLines) {
+              return JSON.parse(savedLines);
             }
-            let parsedLines;
-            try {
-              parsedLines = JSON.parse(savedLines);
-            } catch (parseError) {
-              console.error(
-                "Failed to parse localStorage data:",
-                parseError.message,
-                parseError.stack
-              );
-              return normalizeLineData(initialLineData, "2025-07-19");
-            }
-            if (!Array.isArray(parsedLines)) {
-              console.error(
-                "Invalid data in localStorage: not an array, reverting to initialLineData"
-              );
-              return normalizeLineData(initialLineData, "2025-07-19");
-            }
-            console.log("Loading lines from localStorage:", parsedLines);
-            return normalizeLineData(parsedLines, "2025-07-19");
+            return [];
           } catch (error) {
-            console.error(
-              "Error loading lines from localStorage:",
-              error.message,
-              error.stack
-            );
-            return normalizeLineData(initialLineData, "2025-07-19");
+            console.error("Error loading lines from localStorage:", error);
+            return [];
           }
         });
-        const [globalDate, setGlobalDate] = useState("2025-07-19");
-        const [selectedLine, setSelectedLine] = useState(null);
-        const [newLineName, setNewLineName] = useState("");
-        const [newItem, setNewItem] = useState({
-          code: "",
-          eng: "",
-          planQty: 0,
-          tarkTime: 0,
+        const [fromDate, setFromDate] = useState("2025-08-29"); // Ngày hiện tại
+        const [toDate, setToDate] = useState(() => {
+          const endDate = new Date(2025, 7, 29);
+          endDate.setDate(endDate.getDate() + 7); // 7 ngày sau
+          return endDate.toISOString().split("T")[0];
         });
 
-        // Lưu lines vào localStorage mỗi khi lines thay đổi
-        useEffect(() => {
-          try {
-            console.log("Saving lines to localStorage:", lines);
-            localStorage.setItem("lines", JSON.stringify(lines));
-          } catch (error) {
-            console.error(
-              "Error saving lines to localStorage:",
-              error.message,
-              error.stack
-            );
-          }
-        }, [lines]);
-
-        // Reset về initialLineData
-        const resetData = () => {
-          try {
-            localStorage.removeItem("lines");
-            const initializedLines = normalizeLineData(
-              initialLineData,
-              globalDate
-            );
-            setLines(initializedLines);
-            console.log("Data reset to initialLineData");
-          } catch (error) {
-            console.error("Error resetting data:", error.message, error.stack);
-          }
-        };
-
-        // Tính tổng Workers Need của tất cả Line
-        const calculateTotalWorkersNeed = () => {
-          try {
-            return lines.reduce(
-              (sum, line) => sum + (Number(line.workersNeed) || 0),
-              0
-            );
-          } catch (error) {
-            console.error(
-              "Error in calculateTotalWorkersNeed:",
-              error.message,
-              error.stack
-            );
-            return 0;
-          }
-        };
-
-        // Di chuyển Line lên
-        const moveLineUp = (index) => {
-          try {
-            if (index === 0) return;
-            const updatedLines = [...lines];
-            [updatedLines[index], updatedLines[index - 1]] = [
-              updatedLines[index - 1],
-              updatedLines[index],
-            ];
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in moveLineUp:", error.message, error.stack);
-          }
-        };
-
-        // Di chuyển Line xuống
-        const moveLineDown = (index) => {
-          try {
-            if (index === lines.length - 1) return;
-            const updatedLines = [...lines];
-            [updatedLines[index], updatedLines[index + 1]] = [
-              updatedLines[index + 1],
-              updatedLines[index],
-            ];
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in moveLineDown:", error.message, error.stack);
-          }
-        };
-
-        // Cập nhật tất cả Lines khi globalDate thay đổi
-        useEffect(() => {
-          try {
-            const updatedLines = normalizeLineData(lines, globalDate);
-            setLines(updatedLines);
-          } catch (error) {
-            console.error(
-              "Error in globalDate useEffect:",
-              error.message,
-              error.stack
-            );
-            setLines(normalizeLineData(initialLineData, globalDate));
-          }
-        }, [globalDate]);
-
-        // Thêm Line mới
-        const addLine = () => {
-          try {
-            if (newLineName.trim() === "") return;
-            const newLine = {
-              line: newLineName,
-              timeWork: 440,
-              productivity: 0.95,
-              details: [],
-              planDay: 0,
-              workersNeed: 0,
-            };
-            setLines([...lines, newLine]);
-            setNewLineName("");
-          } catch (error) {
-            console.error("Error in addLine:", error.message, error.stack);
-          }
-        };
-
-        // Sửa tên Line
-        const editLine = (index, newName) => {
-          try {
-            if (typeof newName !== "string" || newName.trim() === "") return;
-            const updatedLines = [...lines];
-            updatedLines[index].line = newName;
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in editLine:", error.message, error.stack);
-          }
-        };
-
-        // Xóa Line
-        const deleteLine = (index) => {
-          try {
-            const updatedLines = lines.filter((_, i) => i !== index);
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in deleteLine:", error.message, error.stack);
-          }
-        };
-
-        // Cập nhật khi thay đổi Time Work hoặc Productivity
-        const updateLine = (index, field, value) => {
-          try {
-            const updatedLines = [...lines];
-            updatedLines[index][field] =
-              Number(value) || (field === "timeWork" ? 440 : 0.95);
-
-            // Cập nhật Workers Need cho các mã hàng
-            updatedLines[index].details = updatedLines[index].details.map(
-              (item) => ({
-                ...item,
-                workersNeed: calculateWorkersNeed(
-                  item.planQty,
-                  item.tarkTime,
-                  updatedLines[index].timeWork
-                ),
-              })
-            );
-
-            // Cập nhật Plan Day và Workers Need cho Line
-            const metrics = calculateLineMetrics(
-              updatedLines[index].details,
-              updatedLines[index].timeWork,
-              updatedLines[index].productivity,
-              globalDate
-            );
-            updatedLines[index].planDay = metrics.planDay;
-            updatedLines[index].workersNeed = metrics.workersNeed;
-
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in updateLine:", error.message, error.stack);
-          }
-        };
-
-        // Cập nhật Plan Q.TY, ENG, TarkTime trong popup
-        const updateDetail = (lineIndex, detailIndex, field, value) => {
-          try {
-            const updatedLines = [...lines];
-            const filteredDetails = updatedLines[lineIndex].details.filter(
-              (item) => item.date === globalDate
-            );
-            const detail = filteredDetails[detailIndex];
-            if (!detail) {
-              console.error("Detail not found at index:", detailIndex);
-              return;
+        // Hàm lấy các ngày hợp lệ (trừ Chủ Nhật)
+        const getValidDates = (start, end) => {
+          const dates = [];
+          let current = new Date(start);
+          const endDate = new Date(end);
+          while (current <= endDate) {
+            if (current.getDay() !== 0) {
+              // 0 is Sunday
+              dates.push(current.toISOString().split("T")[0]);
             }
-            if (field === "planQty" || field === "tarkTime") {
-              detail[field] = parseFloat(value) || 0;
-            } else {
-              detail[field] = typeof value === "string" ? value : "";
-            }
-            detail.workersNeed = calculateWorkersNeed(
-              detail.planQty,
-              detail.tarkTime,
-              updatedLines[lineIndex].timeWork
-            );
-
-            // Cập nhật lại Line metrics
-            const metrics = calculateLineMetrics(
-              updatedLines[lineIndex].details,
-              updatedLines[lineIndex].timeWork,
-              updatedLines[lineIndex].productivity,
-              globalDate
-            );
-            updatedLines[lineIndex].planDay = metrics.planDay;
-            updatedLines[lineIndex].workersNeed = metrics.workersNeed;
-
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in updateDetail:", error.message, error.stack);
+            current.setDate(current.getDate() + 1);
           }
+          return dates;
         };
 
-        // Thêm mã hàng mới
-        const addDetail = (lineIndex) => {
-          try {
-            if (newItem.code.trim() === "" || newItem.eng.trim() === "") return;
-            const updatedLines = [...lines];
-            const newDetail = {
-              ...newItem,
-              date: globalDate,
-              planQty: parseInt(newItem.planQty) || 0,
-              tarkTime: parseInt(newItem.tarkTime) || 0,
-              workersNeed: calculateWorkersNeed(
-                parseInt(newItem.planQty) || 0,
-                parseInt(newItem.tarkTime) || 0,
-                updatedLines[lineIndex].timeWork
-              ),
-            };
-            updatedLines[lineIndex].details.push(newDetail);
-
-            // Cập nhật lại Line metrics
-            const metrics = calculateLineMetrics(
-              updatedLines[lineIndex].details,
-              updatedLines[lineIndex].timeWork,
-              updatedLines[lineIndex].productivity,
-              globalDate
-            );
-            updatedLines[lineIndex].planDay = metrics.planDay;
-            updatedLines[lineIndex].workersNeed = metrics.workersNeed;
-
-            setLines(updatedLines);
-            setNewItem({ code: "", eng: "", planQty: 0, tarkTime: 0 });
-          } catch (error) {
-            console.error("Error in addDetail:", error.message, error.stack);
-          }
-        };
-
-        // Xóa mã hàng
-        const deleteDetail = (lineIndex, detailIndex) => {
-          try {
-            const updatedLines = [...lines];
-            updatedLines[lineIndex].details = updatedLines[
-              lineIndex
-            ].details.filter(
-              (item, i) => !(item.date === globalDate && i === detailIndex)
-            );
-
-            // Cập nhật lại Line metrics
-            const metrics = calculateLineMetrics(
-              updatedLines[lineIndex].details,
-              updatedLines[lineIndex].timeWork,
-              updatedLines[lineIndex].productivity,
-              globalDate
-            );
-            updatedLines[lineIndex].planDay = metrics.planDay;
-            updatedLines[lineIndex].workersNeed = metrics.workersNeed;
-
-            setLines(updatedLines);
-          } catch (error) {
-            console.error("Error in deleteDetail:", error.message, error.stack);
-          }
-        };
+        const validDates = getValidDates(fromDate, toDate);
 
         return (
           <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">FA Personnel Management</h1>
-
-            {/* Chọn ngày chung và nút reset */}
-            <div className="mb-4 flex items-center gap-4">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold">FA Personnel Overview</h1>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={() => (window.location.href = "index2.html")}
+              >
+                Back
+              </button>
+            </div>
+            <div className="mb-4 flex gap-4">
               <div>
-                <label className="mr-2">Select Date:</label>
+                <label className="mr-2">From Date:</label>
                 <input
                   type="date"
                   className="p-2 border rounded"
-                  value={globalDate}
-                  onChange={(e) => {
-                    try {
-                      setGlobalDate(e.target.value || "2025-07-19");
-                    } catch (error) {
-                      console.error(
-                        "Error setting globalDate:",
-                        error.message,
-                        error.stack
-                      );
-                    }
-                  }}
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
                 />
               </div>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                onClick={resetData}
-              >
-                Reset Data
-              </button>
+              <div>
+                <label className="mr-2">To Date:</label>
+                <input
+                  type="date"
+                  className="p-2 border rounded"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
+              </div>
             </div>
 
-            {/* Thêm Line mới */}
-            <div className="mb-4">
-              <input
-                type="text"
-                className="p-2 border rounded mr-2"
-                placeholder="Enter Line Name"
-                value={newLineName}
-                onChange={(e) => {
-                  try {
-                    setNewLineName(e.target.value);
-                  } catch (error) {
-                    console.error(
-                      "Error setting newLineName:",
-                      error.message,
-                      error.stack
-                    );
-                  }
-                }}
-              />
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                onClick={addLine}
-              >
-                Add Line
-              </button>
-            </div>
-
-            {/* Lưới quản lý */}
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 p-2">STT</th>
-                  <th className="border border-gray-300 p-2">Line</th>
-                  <th className="border border-gray-300 p-2">
-                    Plan Day ({globalDate})
-                  </th>
-                  <th className="border border-gray-300 p-2">Time Work</th>
-                  <th className="border border-gray-300 p-2">Productivity</th>
-                  <th className="border border-gray-300 p-2">Workers Need</th>
-                  <th className="border border-gray-300 p-2">Actions</th>
-                  <th className="border border-gray-300 p-2">Move</th>
-                </tr>
-              </thead>
-              <tbody>
-                {lines.map((line, index) => (
-                  <tr key={line.line} className="group">
-                    <td className="border border-gray-300 p-2 text-center">
-                      {index + 1}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      <button
-                        className="text-blue-500 hover:underline"
-                        onClick={() => {
-                          try {
-                            setSelectedLine(line);
-                          } catch (error) {
-                            console.error(
-                              "Error setting selectedLine:",
-                              error.message,
-                              error.stack
-                            );
-                          }
-                        }}
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 p-2">STT</th>
+                    <th className="border border-gray-300 p-2">Line</th>
+                    {validDates.map((day) => (
+                      <th
+                        key={day}
+                        className="border border-gray-300 p-2"
+                        colSpan="3"
                       >
-                        {line.line}
-                      </button>
-                    </td>
-                    <td className="border border-gray-300 p-2 text-center">
-                      {line.planDay || 0}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      <select
-                        className="w-full p-1 border rounded"
-                        value={line.timeWork}
-                        onChange={(e) =>
-                          updateLine(
-                            index,
-                            "timeWork",
-                            parseInt(e.target.value)
-                          )
-                        }
-                      >
-                        {timeWorkOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      <select
-                        className="w-full p-1 border rounded"
-                        value={line.productivity}
-                        onChange={(e) =>
-                          updateLine(
-                            index,
-                            "productivity",
-                            parseFloat(e.target.value)
-                          )
-                        }
-                      >
-                        {productivityOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option * 100}%
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="border border-gray-300 p-2 text-center">
-                      {line.workersNeed || 0}
-                    </td>
-                    <td className="border border-gray-300 p-2 text-center">
-                      <button
-                        className="text-blue-500 hover:underline mr-2"
-                        onClick={() => {
-                          try {
-                            const newName = prompt(
-                              "Enter new Line name:",
-                              line.line
-                            );
-                            if (newName) editLine(index, newName);
-                          } catch (error) {
-                            console.error(
-                              "Error in editLine prompt:",
-                              error.message,
-                              error.stack
-                            );
-                          }
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="text-red-500 hover:underline"
-                        onClick={() => deleteLine(index)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                    <td className="border border-gray-300 p-2 text-center">
-                      <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100">
-                        <button
-                          className={`text-gray-500 hover:text-gray-700 ${
-                            index === 0 ? "opacity-50 cursor-not-allowed" : ""
-                          }`}
-                          onClick={() => moveLineUp(index)}
-                          disabled={index === 0}
-                        >
-                          ↑
-                        </button>
-                        <button
-                          className={`text-gray-500 hover:text-gray-700 ${
-                            index === lines.length - 1
-                              ? "opacity-50 cursor-not-allowed"
-                              : ""
-                          }`}
-                          onClick={() => moveLineDown(index)}
-                          disabled={index === lines.length - 1}
-                        >
-                          ↓
-                        </button>
-                      </div>
-                    </td>
+                        {day}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-                <tr className="bg-gray-100 font-bold">
-                  <td className="border border-gray-300 p-2" colSpan="5">
-                    Total Workers Need
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {calculateTotalWorkersNeed()}
-                  </td>
-                  <td className="border border-gray-300 p-2" colSpan="2"></td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Popup chi tiết */}
-            {selectedLine && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-                <div className="bg-white p-6 rounded-lg shadow-lg max-w-5xl w-full">
-                  <h2 className="text-xl font-bold mb-4">
-                    {selectedLine.line} Details (Date: {globalDate})
-                  </h2>
-
-                  {/* Thêm mã hàng mới */}
-                  <div className="mb-4 flex gap-2">
-                    <input
-                      type="text"
-                      className="p-2 border rounded"
-                      placeholder="Code"
-                      value={newItem.code}
-                      onChange={(e) => {
-                        try {
-                          setNewItem({ ...newItem, code: e.target.value });
-                        } catch (error) {
-                          console.error(
-                            "Error setting newItem.code:",
-                            error.message,
-                            error.stack
-                          );
-                        }
-                      }}
-                    />
-                    <input
-                      type="text"
-                      className="p-2 border rounded"
-                      placeholder="ENG"
-                      value={newItem.eng}
-                      onChange={(e) => {
-                        try {
-                          setNewItem({ ...newItem, eng: e.target.value });
-                        } catch (error) {
-                          console.error(
-                            "Error setting newItem.eng:",
-                            error.message,
-                            error.stack
-                          );
-                        }
-                      }}
-                    />
-                    <input
-                      type="number"
-                      className="p-2 border rounded"
-                      placeholder="Plan Q.TY"
-                      value={newItem.planQty}
-                      onChange={(e) => {
-                        try {
-                          setNewItem({
-                            ...newItem,
-                            planQty: parseInt(e.target.value) || 0,
-                          });
-                        } catch (error) {
-                          console.error(
-                            "Error setting newItem.planQty:",
-                            error.message,
-                            error.stack
-                          );
-                        }
-                      }}
-                    />
-                    <input
-                      type="number"
-                      className="p-2 border rounded"
-                      placeholder="TarkTime"
-                      value={newItem.tarkTime}
-                      onChange={(e) => {
-                        try {
-                          setNewItem({
-                            ...newItem,
-                            tarkTime: parseInt(e.target.value) || 0,
-                          });
-                        } catch (error) {
-                          console.error(
-                            "Error setting newItem.tarkTime:",
-                            error.message,
-                            error.stack
-                          );
-                        }
-                      }}
-                    />
-                    <button
-                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                      onClick={() =>
-                        addDetail(
-                          lines.findIndex((l) => l.line === selectedLine.line)
-                        )
-                      }
-                    >
-                      Add Item
-                    </button>
-                  </div>
-
-                  <table className="w-full border-collapse border border-gray-300">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border border-gray-300 p-2">Mã</th>
-                        <th className="border border-gray-300 p-2">ENG</th>
-                        <th className="border border-gray-300 p-2">
-                          Plan Q.TY
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 p-2"></th>
+                    <th className="border border-gray-300 p-2"></th>
+                    {validDates.map((day) => (
+                      <>
+                        <th
+                          key={`${day}-plan`}
+                          className="border border-gray-300 p-2"
+                        >
+                          Plan Day
                         </th>
-                        <th className="border border-gray-300 p-2">TarkTime</th>
-                        <th className="border border-gray-300 p-2">
+                        <th
+                          key={`${day}-workers`}
+                          className="border border-gray-300 p-2"
+                        >
                           Workers Need
                         </th>
-                        <th className="border border-gray-300 p-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(selectedLine.details || [])
-                        .filter((item) => item.date === globalDate)
-                        .map((item, detailIndex) => (
-                          <tr key={`${item.code}-${item.date}`}>
-                            <td className="border border-gray-300 p-2">
-                              <input
-                                type="text"
-                                className="w-full p-1 border rounded"
-                                value={item.code}
-                                onChange={(e) =>
-                                  updateDetail(
-                                    lines.findIndex(
-                                      (l) => l.line === selectedLine.line
-                                    ),
-                                    detailIndex,
-                                    "code",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </td>
-                            <td className="border border-gray-300 p-2">
-                              <input
-                                type="text"
-                                className="w-full p-1 border rounded"
-                                value={item.eng}
-                                onChange={(e) =>
-                                  updateDetail(
-                                    lines.findIndex(
-                                      (l) => l.line === selectedLine.line
-                                    ),
-                                    detailIndex,
-                                    "eng",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </td>
-                            <td className="border border-gray-300 p-2">
-                              <input
-                                type="number"
-                                className="w-full p-1 border rounded"
-                                value={item.planQty}
-                                onChange={(e) =>
-                                  updateDetail(
-                                    lines.findIndex(
-                                      (l) => l.line === selectedLine.line
-                                    ),
-                                    detailIndex,
-                                    "planQty",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </td>
-                            <td className="border border-gray-300 p-2">
-                              <input
-                                type="number"
-                                className="w-full p-1 border rounded"
-                                value={item.tarkTime}
-                                onChange={(e) =>
-                                  updateDetail(
-                                    lines.findIndex(
-                                      (l) => l.line === selectedLine.line
-                                    ),
-                                    detailIndex,
-                                    "tarkTime",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </td>
-                            <td className="border border-gray-300 p-2 text-center">
-                              {(item.workersNeed || 0).toFixed(3)}
-                            </td>
-                            <td className="border border-gray-300 p-2 text-center">
-                              <button
-                                className="text-red-500 hover:underline"
-                                onClick={() =>
-                                  deleteDetail(
-                                    lines.findIndex(
-                                      (l) => l.line === selectedLine.line
-                                    ),
-                                    detailIndex
-                                  )
-                                }
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                  <div className="mt-4">
-                    <p>
-                      <strong>Sum Plan Q.TY:</strong>{" "}
-                      {selectedLine.planDay || 0}
-                    </p>
-                    <p>
-                      <strong>Sum Workers Need:</strong>{" "}
-                      {(
-                        (selectedLine.details || [])
-                          .filter((item) => item.date === globalDate)
-                          .reduce(
-                            (sum, item) =>
-                              sum + (Number(item.workersNeed) || 0),
-                            0
-                          ) || 0
-                      ).toFixed(3)}
-                    </p>
-                  </div>
-                  <button
-                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => {
-                      try {
-                        setSelectedLine(null);
-                      } catch (error) {
-                        console.error(
-                          "Error closing popup:",
-                          error.message,
-                          error.stack
+                        <th
+                          key={`${day}-actual`}
+                          className="border border-gray-300 p-2"
+                        >
+                          Worker Actual
+                        </th>
+                      </>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {lines.map((line, index) => (
+                    <tr key={line.line}>
+                      <td className="border border-gray-300 p-2 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {line.line}
+                      </td>
+                      {validDates.map((day) => {
+                        const metrics = calculateLineMetrics(
+                          line.details,
+                          line.timeWork,
+                          line.productivity,
+                          day
                         );
-                      }
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
+                        const workerActual = calculateWorkerActual(
+                          line.details,
+                          day
+                        ); // Giả định 0, mở rộng sau
+                        return (
+                          <>
+                            <td className="border border-gray-300 p-2 text-center">
+                              {metrics.planDay}
+                            </td>
+                            <td className="border border-gray-300 p-2 text-center">
+                              {metrics.workersNeed}
+                            </td>
+                            <td className="border border-gray-300 p-2 text-center">
+                              {workerActual}
+                            </td>
+                          </>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         );
       }
 
-      try {
-        ReactDOM.render(<App />, document.getElementById("root"));
-      } catch (error) {
-        console.error("Error rendering App:", error.message, error.stack);
-        document.getElementById("root").innerHTML =
-          "<h1>Error: Failed to render application. Please check the console for details.</h1>";
-      }
+      ReactDOM.render(<App />, document.getElementById("root"));
     </script>
   </body>
 </html>
