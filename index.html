@@ -478,27 +478,24 @@
       };
 
       function App() {
-        // Tải dữ liệu từ localStorage hoặc sử dụng initialLineData
         const [lines, setLines] = useState(() => {
           try {
-            const savedLines = localStorage.getItem("lines");
-            if (!savedLines) {
-              return normalizeLineData(initialLineData, defaultDate);
+            const saved = localStorage.getItem("lines");
+            if (saved) {
+              return JSON.parse(saved);
             }
-            let parsedLines;
-            try {
-              parsedLines = JSON.parse(savedLines);
-            } catch (parseError) {
-              return normalizeLineData(initialLineData, defaultDate);
-            }
-            if (!Array.isArray(parsedLines)) {
-              return normalizeLineData(initialLineData, defaultDate);
-            }
-            return normalizeLineData(parsedLines, defaultDate);
-          } catch (error) {
-            return normalizeLineData(initialLineData, defaultDate);
+            return [];
+          } catch {
+            return [];
           }
         });
+
+        // Nếu muốn reload dữ liệu mỗi lần mở trang:
+        // useEffect(() => {
+        //   const saved = localStorage.getItem("lines");
+        //   if (saved) setLines(JSON.parse(saved));
+        // }, []);
+
         const [globalDate, setGlobalDate] = useState(defaultDate);
         const [selectedLine, setSelectedLine] = useState(null);
         const [newLineName, setNewLineName] = useState("");
@@ -522,6 +519,12 @@
             );
           }
         }, [lines]);
+
+        // Tải dữ liệu từ localStorage khi khởi động
+        useEffect(() => {
+          const saved = localStorage.getItem("lines");
+          if (saved) setLines(JSON.parse(saved));
+        }, []);
 
         // Reset về initialLineData
         const resetData = () => {
