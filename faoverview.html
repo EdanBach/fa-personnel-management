@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FA Personnel Overview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.22.10/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // Hàm tính Workers Need cho một mã hàng (không làm tròn)
+      const calculateWorkersNeed = (planQty, tarkTime, timeWork) => {
+        return (planQty * tarkTime) / timeWork;
+      };
+
+      // Hàm làm tròn Workers Need cho tổng Line
+      const customRound = (number) => {
+        const decimalPart = number % 1;
+        if (decimalPart > 0.5) {
+          return Math.ceil(number);
+        } else {
+          return Math.floor(number);
+        }
+      };
+
+      // Hàm tính toán tổng Workers Need và Plan Day cho một Line với ngày cụ thể
+      const calculateLineMetrics = (details, timeWork, productivity, date) => {
+        const filteredDetails = details.filter((item) => item.date === date);
+        const totalPlanQty = filteredDetails.reduce(
+          (sum, item) => sum + item.planQty,
+          0
+        );
+        const totalWorkersNeed = filteredDetails.reduce(
+          (sum, item) =>
+            sum + calculateWorkersNeed(item.planQty, item.tarkTime, timeWork),
+          0
+        );
+        return {
+          planDay: totalPlanQty,
+          workersNeed:
+            filteredDetails.length > 0
+              ? customRound(totalWorkersNeed / productivity)
+              : 0,
+        };
+      };
+
+      // Hàm lấy Worker Actual giả định (có thể mở rộng để lấy từ chấm công)
+      const calculateWorkerActual = (details, date) => {
+        // Giả định Worker Actual = 0 hoặc tính từ dữ liệu chấm công (mở rộng sau)
+        return 0; // Thay bằng logic thực tế nếu có dữ liệu chấm công
+      };
+
+      function App() {
+        const [lines, setLines] = useState(() => {
+          try {
+            const savedLines = localStorage.getItem("lines");
+            if (savedLines) {
+              return JSON.parse(savedLines);
+            }
+            return [];
+          } catch (error) {
+            console.error("Error loading lines from localStorage:", error);
+            return [];
+          }
+        });
+        const [fromDate, setFromDate] = useState("2025-08-29"); // Ngày hiện tại
+        const [toDate, setToDate] = useState(() => {
+          const endDate = new Date(2025, 7, 29);
+          endDate.setDate(endDate.getDate() + 7); // 7 ngày sau
+          return endDate.toISOString().split("T")[0];
+        });
+
+        // Hàm lấy các ngày hợp lệ (trừ Chủ Nhật)
+        const getValidDates = (start, end) => {
+          const dates = [];
+          let current = new Date(start);
+          const endDate = new Date(end);
+          while (current <= endDate) {
+            if (current.getDay() !== 0) {
+              // 0 is Sunday
+              dates.push(current.toISOString().split("T")[0]);
+            }
+            current.setDate(current.getDate() + 1);
+          }
+          return dates;
+        };
+
+        const validDates = getValidDates(fromDate, toDate);
+
+        return (
+          <div className="container mx-auto p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold">FA Personnel Overview</h1>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                onClick={() => (window.location.href = "index2.html")}
+              >
+                Back
+              </button>
+            </div>
+            <div className="mb-4 flex gap-4">
+              <div>
+                <label className="mr-2">From Date:</label>
+                <input
+                  type="date"
+                  className="p-2 border rounded"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="mr-2">To Date:</label>
+                <input
+                  type="date"
+                  className="p-2 border rounded"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 p-2">STT</th>
+                    <th className="border border-gray-300 p-2">Line</th>
+                    {validDates.map((day) => (
+                      <th
+                        key={day}
+                        className="border border-gray-300 p-2"
+                        colSpan="3"
+                      >
+                        {day}
+                      </th>
+                    ))}
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-300 p-2"></th>
+                    <th className="border border-gray-300 p-2"></th>
+                    {validDates.map((day) => (
+                      <>
+                        <th
+                          key={`${day}-plan`}
+                          className="border border-gray-300 p-2"
+                        >
+                          Plan Day
+                        </th>
+                        <th
+                          key={`${day}-workers`}
+                          className="border border-gray-300 p-2"
+                        >
+                          Workers Need
+                        </th>
+                        <th
+                          key={`${day}-actual`}
+                          className="border border-gray-300 p-2"
+                        >
+                          Worker Actual
+                        </th>
+                      </>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {lines.map((line, index) => (
+                    <tr key={line.line}>
+                      <td className="border border-gray-300 p-2 text-center">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {line.line}
+                      </td>
+                      {validDates.map((day) => {
+                        const metrics = calculateLineMetrics(
+                          line.details,
+                          line.timeWork,
+                          line.productivity,
+                          day
+                        );
+                        const workerActual = calculateWorkerActual(
+                          line.details,
+                          day
+                        ); // Giả định 0, mở rộng sau
+                        return (
+                          <>
+                            <td className="border border-gray-300 p-2 text-center">
+                              {metrics.planDay}
+                            </td>
+                            <td className="border border-gray-300 p-2 text-center">
+                              {metrics.workersNeed}
+                            </td>
+                            <td className="border border-gray-300 p-2 text-center">
+                              {workerActual}
+                            </td>
+                          </>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
