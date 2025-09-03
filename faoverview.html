@@ -57,24 +57,36 @@
       };
 
       function App() {
+        // Dữ liệu mẫu, bạn có thể thay bằng dữ liệu thực tế nếu cần
         const [lines, setLines] = useState(() => {
           try {
-            const savedLines = localStorage.getItem("lines");
-            if (savedLines) {
-              return JSON.parse(savedLines);
+            const saved = localStorage.getItem("lines");
+            if (saved) {
+              return JSON.parse(saved);
             }
             return [];
-          } catch (error) {
-            console.error("Error loading lines from localStorage:", error);
+          } catch {
             return [];
           }
         });
-        const [fromDate, setFromDate] = useState("2025-08-29"); // Ngày hiện tại
-        const [toDate, setToDate] = useState(() => {
-          const endDate = new Date(2025, 7, 29);
-          endDate.setDate(endDate.getDate() + 7); // 7 ngày sau
-          return endDate.toISOString().split("T")[0];
+
+        const [fromDate, setFromDate] = useState(() => {
+          const today = new Date();
+          return today.toISOString().split("T")[0];
         });
+
+        const [toDate, setToDate] = useState(() => {
+          const start = new Date();
+          start.setDate(start.getDate() + 7);
+          return start.toISOString().split("T")[0];
+        });
+
+        // Khi fromDate thay đổi, cập nhật lại toDate
+        useEffect(() => {
+          const start = new Date(fromDate);
+          start.setDate(start.getDate() + 7);
+          setToDate(start.toISOString().split("T")[0]);
+        }, [fromDate]);
 
         // Hàm lấy các ngày hợp lệ (trừ Chủ Nhật)
         const getValidDates = (start, end) => {
