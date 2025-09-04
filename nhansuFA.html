@@ -27,9 +27,20 @@
       .attendance-yellow {
         color: #ffc107;
       }
+      .table {
+        table-layout: fixed;
+        width: 100%;
+        white-space: normal;
+        word-wrap: break-word;
+      }
       .table th,
       .table td {
         vertical-align: middle;
+        overflow: hidden;
+        min-width: 80px; /* Đảm bảo ô đủ rộng để hiển thị nội dung */
+      }
+      .container {
+        max-width: 100%;
       }
     </style>
   </head>
@@ -77,13 +88,15 @@
             <th>Phân Công Line</th>
             <th>Thời gian nhận Line</th>
             <th>Ca Làm Việc</th>
+            <th>Thời gian vào</th>
+            <th>Thời gian ra</th>
             <th>Attendance</th>
             <th>Thời gian trễ</th>
             <th>Hành Động</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Existing Data -->
+          <!-- 5 ca sáng đúng giờ (trừ 1267 thay đỏ) -->
           <tr>
             <td><input type="checkbox" class="rowCheckbox" /></td>
             <td>1270</td>
@@ -120,11 +133,13 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>6:15</td>
+            <td>13:45</td>
             <td>
               <i
                 class="fas fa-check-circle attendance-green"
@@ -170,11 +185,13 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>6:30</td>
+            <td>13:50</td>
             <td>
               <i
                 class="fas fa-times-circle attendance-red"
@@ -225,17 +242,17 @@
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>6:45</td>
+            <td>14:10</td>
             <td>
               <i
-                class="fas fa-exclamation-triangle attendance-yellow"
-                title="Chấm công trễ"
+                class="fas fa-check-circle attendance-green"
+                title="Đi làm đúng giờ"
               ></i>
             </td>
-            <td>14 phút</td>
+            <td>-</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
-
-          <!-- New Data -->
           <tr>
             <td><input type="checkbox" class="rowCheckbox" /></td>
             <td>1262</td>
@@ -272,11 +289,13 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>7:00</td>
+            <td>13:30</td>
             <td>
               <i
                 class="fas fa-check-circle attendance-green"
@@ -322,20 +341,24 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>6:10</td>
+            <td>14:00</td>
             <td>
               <i
-                class="fas fa-times-circle attendance-red"
-                title="Không chấm công"
+                class="fas fa-check-circle attendance-green"
+                title="Đi làm đúng giờ"
               ></i>
             </td>
             <td>-</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
+
+          <!-- 3 ca sáng đi trễ -->
           <tr>
             <td><input type="checkbox" class="rowCheckbox" /></td>
             <td>1252</td>
@@ -373,18 +396,20 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>6:50</td>
+            <td>14:10</td>
             <td>
               <i
                 class="fas fa-exclamation-triangle attendance-yellow"
                 title="Chấm công trễ"
               ></i>
             </td>
-            <td>10 phút</td>
+            <td>50 phút</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
           <tr>
@@ -424,18 +449,20 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>7:15</td>
+            <td>14:15</td>
             <td>
               <i
-                class="fas fa-check-circle attendance-green"
-                title="Đi làm đúng giờ"
+                class="fas fa-exclamation-triangle attendance-yellow"
+                title="Chấm công trễ"
               ></i>
             </td>
-            <td>-</td>
+            <td>1 giờ 15 phút</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
           <tr>
@@ -475,20 +502,24 @@
             </td>
             <td>
               <select class="form-select assignShift">
-                <option>Ca Sáng</option>
+                <option selected>Ca Sáng</option>
                 <option>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>7:20</td>
+            <td>14:20</td>
             <td>
               <i
-                class="fas fa-times-circle attendance-red"
-                title="Không chấm công"
+                class="fas fa-exclamation-triangle attendance-yellow"
+                title="Chấm công trễ"
               ></i>
             </td>
-            <td>-</td>
+            <td>1 giờ 20 phút</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
+
+          <!-- 2 ca chiều đúng giờ -->
           <tr>
             <td><input type="checkbox" class="rowCheckbox" /></td>
             <td>1213</td>
@@ -527,10 +558,12 @@
             <td>
               <select class="form-select assignShift">
                 <option>Ca Sáng</option>
-                <option>Ca Chiều</option>
+                <option selected>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>14:30</td>
+            <td>21:45</td>
             <td>
               <i
                 class="fas fa-check-circle attendance-green"
@@ -578,19 +611,23 @@
             <td>
               <select class="form-select assignShift">
                 <option>Ca Sáng</option>
-                <option>Ca Chiều</option>
+                <option selected>Ca Chiều</option>
                 <option>Ca Tối</option>
               </select>
             </td>
+            <td>15:00</td>
+            <td>21:30</td>
             <td>
               <i
-                class="fas fa-exclamation-triangle attendance-yellow"
-                title="Chấm công trễ"
+                class="fas fa-check-circle attendance-green"
+                title="Đi làm đúng giờ"
               ></i>
             </td>
-            <td>20 phút</td>
+            <td>-</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
+
+          <!-- Remaining rows with default (e.g., ca tối or random) -->
           <tr>
             <td><input type="checkbox" class="rowCheckbox" /></td>
             <td>1082</td>
@@ -630,9 +667,11 @@
               <select class="form-select assignShift">
                 <option>Ca Sáng</option>
                 <option>Ca Chiều</option>
-                <option>Ca Tối</option>
+                <option selected>Ca Tối</option>
               </select>
             </td>
+            <td>23:00</td>
+            <td>5:45</td>
             <td>
               <i
                 class="fas fa-check-circle attendance-green"
@@ -680,13 +719,15 @@
               <select class="form-select assignShift">
                 <option>Ca Sáng</option>
                 <option>Ca Chiều</option>
-                <option>Ca Tối</option>
+                <option selected>Ca Tối</option>
               </select>
             </td>
+            <td>22:30</td>
+            <td>5:30</td>
             <td>
               <i
-                class="fas fa-times-circle attendance-red"
-                title="Không chấm công"
+                class="fas fa-check-circle attendance-green"
+                title="Đi làm đúng giờ"
               ></i>
             </td>
             <td>-</td>
@@ -731,16 +772,18 @@
               <select class="form-select assignShift">
                 <option>Ca Sáng</option>
                 <option>Ca Chiều</option>
-                <option>Ca Tối</option>
+                <option selected>Ca Tối</option>
               </select>
             </td>
+            <td>23:10</td>
+            <td>6:20</td>
             <td>
               <i
-                class="fas fa-check-circle attendance-green"
-                title="Đi làm đúng giờ"
+                class="fas fa-exclamation-triangle attendance-yellow"
+                title="Chấm công trễ"
               ></i>
             </td>
-            <td>-</td>
+            <td>10 phút</td>
             <td><button class="btn btn-sm btn-success saveRow">Lưu</button></td>
           </tr>
         </tbody>
